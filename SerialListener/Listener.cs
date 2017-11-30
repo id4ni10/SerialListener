@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SerialListener
@@ -53,7 +54,7 @@ namespace SerialListener
 
             Cursor = Cursors.WaitCursor;
 
-            textBox.Text += "Iniciando os testes..." + Environment.NewLine;
+            textBox.Text += $"Iniciando os testes...{Environment.NewLine}";
 
             try
             {
@@ -98,9 +99,23 @@ namespace SerialListener
             }
         }
 
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private async void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            textBox.Text += $"{Environment.NewLine}{serialPort.ReadExisting()}";
+            await Task.Run(() =>
+            {
+                try
+                {
+                    textBox.Text += $"{Environment.NewLine}{serialPort.ReadExisting()}";
+                } catch { }
+            });
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            if (serialPort.IsOpen)
+                serialPort.Close();
+
+            base.OnClosed(e);
         }
     }
 }
