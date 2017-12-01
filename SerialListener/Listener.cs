@@ -29,18 +29,18 @@ namespace SerialListener
             if (FormWindowState.Minimized == WindowState)
             {
                 notifyIcon.Visible = true;
-
+                
                 Hide();
             }
+
+            base.OnResize(e);
         }
 
         private void notifyIcon_Click(object sender, EventArgs e)
         {
             notifyIcon.Visible = false;
-
+            
             Show();
-
-            ResumeLayout();
         }
 
         private async void setup_Click(object sender, EventArgs e)
