@@ -7,16 +7,15 @@ namespace SerialListener
 {
     public static class Email
     {
-        public async static void send(string destination)
+        public async static void send(string destination, string temperature = "Setup Completo!")
         {
             try
             {
                 var remetenteEmail = "sistemas@portalimap.org.br";
 
-                var body = "<html><style>div { float: left; } hr { clear: both; } p { clear: both; }</style><div><img style='width: 100px; border-radius: 5px;	float: left; margin-right: 20px;' src='" +
-                    "https://ws.imap.org.br/sigem/98765463873.png" + "' />";
+                var body = "<html><style>div { float: left; } hr { clear: both; } p { clear: both; }</style><div>";
 
-                var format = string.Format("<div><h2>{0}</h2><h3>{1} - {2}</h3></div></div><br /><hr /><p>{3}</p></html>", "Sistemas", remetenteEmail, Environment.MachineName, Environment.OSVersion);
+                var format = string.Format("<div><h2>{0}</h2><h3>{1} - {2}</h3></div></div><br /><hr /><p>{3}</p></html>", "Sistemas", remetenteEmail, Environment.MachineName, temperature);
 
                 body += format;
 

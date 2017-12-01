@@ -2,6 +2,7 @@
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -39,65 +40,75 @@ namespace SerialListener
 
             Show();
 
-            Activate();
-
-            BringToFront();
+            ResumeLayout();
         }
 
-        private void setup_Click(object sender, EventArgs e)
+        private async void setup_Click(object sender, EventArgs e)
         {
-            textBox.Clear();
-
-            progressBar.Step = 1;
-            progressBar.Value = 0;
-            progressBar.Maximum = 999;
-
-            Cursor = Cursors.WaitCursor;
-
-            textBox.Text += $"Iniciando os testes...{Environment.NewLine}";
-
-            try
+            await Task.Factory.StartNew(() =>
             {
-                Progress();
+                if (serialPort.IsOpen)
+                    serialPort.Close();
 
-                if (comboBox1.DataSource == null)
-                    throw new Exception("Objeto COM não encontrado!");
+                textBox.Clear();
 
-                serialPort.PortName = comboBox1.SelectedText;
-                serialPort.BaudRate = 9600;
-                serialPort.DataBits = 8;
-                serialPort.Parity = Parity.None;
-                serialPort.StopBits = StopBits.One;
-                serialPort.Handshake = Handshake.None;
-                serialPort.Encoding = Encoding.Default;
-
-                textBox.Text += $"Conectando: COM: {serialPort.PortName} BaudRate: {serialPort.BaudRate}";
-
-                serialPort.Open();
-
-                Progress();
-            }
-            catch (Exception exp)
-            {
-                textBox.Text += $"{Environment.NewLine}{exp.Message}";
-            }
-            finally
-            {
+                progressBar.Step = 1;
                 progressBar.Value = 0;
+                progressBar.Maximum = 99;
 
-                Cursor = Cursors.Default;
-            }
+                Cursor = Cursors.WaitCursor;
+
+                textBox.Text += $"Iniciando os testes...{Environment.NewLine}";
+
+                Progress();
+
+                try
+                {
+                    if (comboBox1.DataSource == null)
+                        throw new Exception("Objeto COM não encontrado!");
+
+                    serialPort.PortName = comboBox1.SelectedItem.ToString();
+                    serialPort.BaudRate = 9600;
+                    serialPort.DataBits = 8;
+                    serialPort.Parity = Parity.None;
+                    serialPort.StopBits = StopBits.OnePointFive;
+                    serialPort.Handshake = Handshake.None;
+                    serialPort.Encoding = Encoding.Default;
+
+                    textBox.Text += $"Conectando: {serialPort.PortName} BaudRate: {serialPort.BaudRate}{Environment.NewLine}";
+
+                    Progress();
+
+                    //Email.send(email.Text);
+
+                    Progress();
+
+                    serialPort.Open();
+
+                    textBox.Text += $"Serial OK!{Environment.NewLine}";
+                }
+                catch (Exception exp)
+                {
+                    textBox.Text += $"{Environment.NewLine}{exp.Message}";
+                }
+                finally
+                {
+                    progressBar.Value = 0;
+
+                    Cursor = Cursors.Default;
+                }
+            });
         }
 
         private void Progress()
         {
-            for (int i = 0; i < 333; i++)
-            {
+            for (int i = 0; i < 33; i++)
                 progressBar.Value += 1;
 
-                Application.DoEvents();
-            }
+            Thread.Sleep(1000);
         }
+
+        DateTime sent = DateTime.Now;
 
         private async void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -105,8 +116,34 @@ namespace SerialListener
             {
                 try
                 {
-                    textBox.Text += $"{Environment.NewLine}{serialPort.ReadExisting()}";
-                } catch { }
+                    var existing = serialPort.ReadExisting();
+
+                    if (!string.IsNullOrWhiteSpace(existing))
+                    {
+                        if (alerta.Value < Convert.ToInt32(existing))
+                        {
+                            var value = $"{Environment.NewLine}Alerta: {existing}°C";
+
+                            textBox.Text += value;
+
+                            if (sent.AddHours(1) < DateTime.Now) {
+
+                                //TODO: check this
+
+                                //Email.send(email.Text, value);
+
+                                sent = DateTime.Now;
+                            }
+                        }
+                    }
+
+                    textBox.SelectionStart = textBox.TextLength;
+                    textBox.ScrollToCaret();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
             });
         }
 
