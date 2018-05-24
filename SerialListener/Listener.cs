@@ -29,7 +29,7 @@ namespace SerialListener
             if (FormWindowState.Minimized == WindowState)
             {
                 notifyIcon.Visible = true;
-                
+
                 Hide();
             }
 
@@ -39,7 +39,7 @@ namespace SerialListener
         private void notifyIcon_Click(object sender, EventArgs e)
         {
             notifyIcon.Visible = false;
-            
+
             Show();
         }
 
@@ -108,7 +108,8 @@ namespace SerialListener
             Thread.Sleep(1000);
         }
 
-        DateTime sent = DateTime.Now;
+        private DateTime? sent = null;
+        private int temperature;
 
         private async void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -116,23 +117,27 @@ namespace SerialListener
             {
                 try
                 {
-                    var existing = serialPort.ReadExisting();
+                    var existing = serialPort.ReadLine();
 
                     if (!string.IsNullOrWhiteSpace(existing))
                     {
-                        if (alerta.Value < Convert.ToInt32(existing))
+                        temperature = Convert.ToInt32(existing.Replace("\r", ""));
+
+                        if (alerta.Value <= temperature & temperature < 60)//fix bad read
                         {
-                            var value = $"{Environment.NewLine}Alerta: {existing}°C";
+                            if (sent == null || sent.Value.AddHours(1) < DateTime.Now)
+                            {
+                                var value = $"{Environment.NewLine}Alerta: {existing}°C";
 
-                            textBox.Text += value;
+                                textBox.Text += value;
 
-                            if (sent.AddHours(1) < DateTime.Now) {
-
-                                //TODO: check this
-
-                                //Email.send(email.Text, value);
+                                Email.send(email.Text, value);
 
                                 sent = DateTime.Now;
+
+                                notifyIcon.BalloonTipIcon = ToolTipIcon.Warning;
+
+                                notifyIcon.ShowBalloonTip(1000);
                             }
                         }
                     }
@@ -153,6 +158,12 @@ namespace SerialListener
                 serialPort.Close();
 
             base.OnClosed(e);
+        }
+
+        private void notifyIcon_MouseMove(object sender, MouseEventArgs e)
+        {
+            notifyIcon.BalloonTipText = $"{temperature} C°";
+            notifyIcon.Text = $"{temperature} C°";
         }
     }
 }

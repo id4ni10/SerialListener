@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Listener));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.alerta = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -40,8 +42,6 @@
             this.textBox = new System.Windows.Forms.TextBox();
             this.setup = new System.Windows.Forms.Button();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
-            this.label3 = new System.Windows.Forms.Label();
-            this.alerta = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.alerta)).BeginInit();
             this.SuspendLayout();
@@ -54,6 +54,7 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Listener";
             this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
+            this.notifyIcon.MouseMove += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseMove);
             // 
             // groupBox1
             // 
@@ -75,6 +76,27 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Info";
+            // 
+            // alerta
+            // 
+            this.alerta.Location = new System.Drawing.Point(195, 47);
+            this.alerta.Name = "alerta";
+            this.alerta.Size = new System.Drawing.Size(56, 20);
+            this.alerta.TabIndex = 1;
+            this.alerta.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(142, 49);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "°C Alerta";
             // 
             // label2
             // 
@@ -139,27 +161,6 @@
             // serialPort
             // 
             this.serialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort_DataReceived);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(142, 49);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "°C Alerta";
-            // 
-            // alerta
-            // 
-            this.alerta.Location = new System.Drawing.Point(195, 47);
-            this.alerta.Name = "alerta";
-            this.alerta.Size = new System.Drawing.Size(56, 20);
-            this.alerta.TabIndex = 1;
-            this.alerta.Value = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
             // 
             // Listener
             // 
