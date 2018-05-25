@@ -1,4 +1,10 @@
 //https://create.arduino.cc/editor/id4ni10/b90d2a74-7893-4b01-a639-3e24acff5815
+#include "DHT.h"
+ 
+#define DHTPIN A3 // pino que estamos conectado
+#define DHTTYPE DHT11 // DHT 11
+
+DHT dht(DHTPIN, DHTTYPE);
 
 int pin1 = 10;
 int pin2 = 11;
@@ -11,11 +17,11 @@ int gnd1 = 2; // gnd1 is display 1's gnd
 int gnd2 = 3; // gnd2 is display 2's gnd
 int timer = 25;
 
-String print;
+int temperatura;
 
 void setup(){
   Serial.begin(9600);
-
+  
   pinMode(pin1, OUTPUT);
   pinMode(pin2, OUTPUT);
   pinMode(pin3, OUTPUT);
@@ -25,12 +31,23 @@ void setup(){
   pinMode(pin7, OUTPUT);
   pinMode(gnd1, OUTPUT);
   pinMode(gnd2, OUTPUT);
+  
+  dht.begin();
 }
 
 void loop() {
-  for(int x = 0; x < 10; x++){
-    Serial.print(x + String("0"));
+  // testa se retorno é valido, caso contrário algo está errado.
+  //float h = dht.readHumidity();
+  temperatura = dht.readTemperature();
+  
+  if (!isnan(temperatura))
+    printNumbers(temperatura / 10, temperatura % 10);
+  
+  Serial.println(temperatura);
+}
 
+void printAllNumbers(){
+  for(int x = 0; x < 10; x++){
     for(int y = 0; y < 10; y++){
       printNumbers(x, y);
     }
@@ -39,7 +56,7 @@ void loop() {
 
 void zero(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, LOW);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -47,14 +64,14 @@ void zero(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void um(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, HIGH);
    digitalWrite(pin3, LOW);
@@ -62,14 +79,14 @@ void um(int pin){
    digitalWrite(pin5, HIGH);
    digitalWrite(pin6, HIGH);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void dois(int pin){
   digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, LOW);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, HIGH);
@@ -77,14 +94,14 @@ void dois(int pin){
    digitalWrite(pin5, HIGH);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void tres(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -92,14 +109,14 @@ void tres(int pin){
    digitalWrite(pin5, HIGH);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void quatro(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, HIGH);
    digitalWrite(pin3, LOW);
@@ -107,14 +124,14 @@ void quatro(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, HIGH);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void cinco(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -122,14 +139,14 @@ void cinco(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, HIGH);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void seis(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, LOW);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -137,14 +154,14 @@ void seis(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, HIGH);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void sete(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, HIGH);
    digitalWrite(pin3, LOW);
@@ -152,14 +169,14 @@ void sete(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void oito(int pin){
   digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, LOW);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -167,14 +184,14 @@ void oito(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
 void nove(int pin){
    digitalWrite(pin, HIGH);
-
+   
    digitalWrite(pin1, HIGH);
    digitalWrite(pin2, LOW);
    digitalWrite(pin3, LOW);
@@ -182,8 +199,8 @@ void nove(int pin){
    digitalWrite(pin5, LOW);
    digitalWrite(pin6, LOW);
    digitalWrite(pin7, LOW);
-
-   delay(5);
+   
+   delay(3);
    digitalWrite(pin, LOW);
 }
 
